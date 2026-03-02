@@ -1,5 +1,6 @@
 import { ChildProcess, spawn } from "child_process";
 import * as net from "net";
+import { pathToFileURL } from "url";
 
 export class VlcPlayer {
     server: ChildProcess | null = null;
@@ -8,7 +9,7 @@ export class VlcPlayer {
     private commandQueue: { command: string; resolve: (value: string) => void; reject: (reason?: any) => void }[] = [];
     private isProcessingQueue: boolean = false;
     private isSocketConnected: boolean = false;
-    private firstPlay: boolean = true;
+    private loopEnabled: boolean = false;
 
     constructor(
         private vlcPath: string,
@@ -19,6 +20,8 @@ export class VlcPlayer {
         const fullArgs = [...this.args, "-I", "rc", "--rc-host", `127.0.0.1:${port}`];
         console.log(`VLC: starting process "${vlcPath}" with args: ${fullArgs.join(" ")}`);
         this.server = spawn(this.vlcPath, fullArgs, { windowsHide: true });
+        this.server.stdout?.on("data", (d: Buffer) => console.log(`VLC stdout: ${d.toString().trimEnd()}`));
+        this.server.stderr?.on("data", (d: Buffer) => console.log(`VLC stderr: ${d.toString().trimEnd()}`));
         this.server.on("spawn", () => {
             console.log(`VLC: process spawned (pid ${this.server?.pid})`);
         });
@@ -44,8 +47,12 @@ export class VlcPlayer {
             this.socket = net.connect(this.port, "127.0.0.1", () => {
                 console.log("VLC: RC socket connected");
                 this.isSocketConnected = true;
+                const vlcVol = Math.floor(Math.max(0, Math.min(1, this.initialVol)) * 256);
+                this.socket!.write(`volume ${vlcVol}\nrepeat ${this.loopEnabled ? "on" : "off"}\n`);
                 resolve();
             });
+
+            this.socket.on("data", (d: Buffer) => console.log(`VLC rc: ${d.toString().trimEnd()}`));
 
             this.socket.on("error", (err) => {
                 console.log(`VLC: RC socket error — ${err}`);
@@ -102,18 +109,22 @@ export class VlcPlayer {
     }
 
     private async _play() {
+        await this.connectSocket();
+        if (!this.socket) { return; }
+
+        await this.stop();
+
         if (this.filepath) {
-            console.log(`VLC: playing "${this.filepath}"`);
-            await this.sendCommand("clear");
-            await this.sendCommand(`add "${this.filepath}"`);
-            if (this.firstPlay) {
-                this.firstPlay = false;
-                setTimeout(() => {
-                    this.setVol(this.initialVol);
-                }, 100);
-            }
-        } else {
-            await this.stop();
+            const uri = pathToFileURL(this.filepath).href;
+            console.log(`VLC: playing ${uri}`);
+            await this.sendCommand(`add ${uri}`);
+        }
+    }
+
+    setLoop(enabled: boolean): void {
+        this.loopEnabled = enabled;
+        if (this.socket && this.isSocketConnected) {
+            this.socket.write(`repeat ${enabled ? "on" : "off"}\n`);
         }
     }
 
@@ -141,7 +152,7 @@ export class VlcPlayer {
     async stop(): Promise<void> {
         console.log("VLC: stopping");
         await this.sendCommand("stop");
-        this.firstPlay = true;
+        await this.sendCommand("clear");
     }
 
     async close(): Promise<void> {
@@ -154,12 +165,9 @@ export class VlcPlayer {
 
     async quit(): Promise<void> {
         console.log("VLC: quitting");
-        try {
-            await this.sendCommand("quit");
-        } catch {
-            // VLC may not be connected yet or already gone
+        if (this.socket && this.isSocketConnected) {
+            this.socket.write("shutdown\n");
         }
         await this.close();
-        this.server?.kill();
     }
 }

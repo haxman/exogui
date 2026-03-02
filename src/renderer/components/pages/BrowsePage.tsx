@@ -3,6 +3,7 @@ import {
     forceSearch,
     selectGame,
     selectPlaylist,
+    stopMusic,
 } from "@renderer/redux/searchSlice";
 import { RootState } from "@renderer/redux/store";
 import { openGameConfigDirectory } from "@renderer/util/games";
@@ -70,6 +71,7 @@ const mapDispatch = {
     onSelectPlaylist: selectPlaylist,
     onSelectGame: selectGame,
     forceSearch: forceSearch,
+    onStopMusic: stopMusic,
 };
 
 const connector = connect(mapState, mapDispatch);
@@ -125,6 +127,7 @@ class BrowsePage extends React.Component<
         const currentView = this.props.searchState.views[this.props.gameLibrary];
 
         if (prevProps.gameLibrary !== this.props.gameLibrary) {
+            this.props.onStopMusic();
             const view = this.props.searchState.views[this.props.gameLibrary];
             if (view && view.games.length === 0) {
                 // No games found, force a search incase it hasn't tried to load yet

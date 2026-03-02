@@ -1,4 +1,6 @@
 import { englishTranslation } from "@renderer/lang/en";
+import { faForward, faPlay, faRepeat, faStop } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BackIn } from "@shared/back/types";
 import {
     BrowsePageLayout,
@@ -11,7 +13,6 @@ import { throttle } from "@shared/utils/throttle";
 import * as React from "react";
 import { WithPreferencesProps } from "../containers/withPreferences";
 import { gameScaleSpan } from "../Util";
-import { SimpleButton } from "./SimpleButton";
 
 type OwnProps = {
     /** Total number of games. */
@@ -28,6 +29,14 @@ type OwnProps = {
     layout: BrowsePageLayout;
     /** Called when the value of the layout selector is changed. */
     onLayoutChange?: (value: BrowsePageLayout) => void;
+    /** Whether the currently selected game has music available. */
+    hasMusicPath?: boolean;
+    /** Whether music is currently playing. */
+    isMusicPlaying: boolean;
+    /** Called to start playing music for the current game. */
+    onPlayMusic: () => void;
+    /** Called to stop playing music. */
+    onStopMusic: () => void;
 };
 
 export type FooterProps = OwnProps & WithPreferencesProps;
@@ -51,7 +60,11 @@ export class Footer extends React.Component<FooterProps> {
         const {
             currentCount,
             currentLabel,
+            hasMusicPath,
+            isMusicPlaying,
             layout,
+            onPlayMusic,
+            onStopMusic,
             scaleSliderValue,
             totalCount,
         } = this.props;
@@ -78,6 +91,32 @@ export class Footer extends React.Component<FooterProps> {
                             {/* Volume Slider (only if VLC is available) */}
                             {window.External.vlcAvailable && (
                                 <>
+                                    {/* Loop button */}
+                                    <div className="footer__wrap">
+                                        <button
+                                            className={`simple-button${window.External.preferences.data.gameMusicLoop ? " simple-button--active" : ""}`}
+                                            style={{ opacity: window.External.preferences.data.gameMusicLoop ? 1 : 0.5 }}
+                                            title={`Loop: ${window.External.preferences.data.gameMusicLoop ? "On" : "Off"}`}
+                                            onClick={() => {
+                                                const newLoop = !window.External.preferences.data.gameMusicLoop;
+                                                updatePreferencesData({ gameMusicLoop: newLoop });
+                                                window.External.back.send(BackIn.SET_LOOP, newLoop);
+                                            }}>
+                                            <FontAwesomeIcon icon={faRepeat} />
+                                        </button>
+                                    </div>
+                                    {/* Autoplay button */}
+                                    <div className="footer__wrap">
+                                        <button
+                                            className={`simple-button${window.External.preferences.data.gameMusicPlay ? " simple-button--active" : ""}`}
+                                            style={{ opacity: window.External.preferences.data.gameMusicPlay ? 1 : 0.5 }}
+                                            title={`Autoplay: ${window.External.preferences.data.gameMusicPlay ? "On" : "Off"}`}
+                                            onClick={() => {
+                                                updatePreferencesData({ gameMusicPlay: !window.External.preferences.data.gameMusicPlay });
+                                            }}>
+                                            <FontAwesomeIcon icon={faForward} />
+                                        </button>
+                                    </div>
                                     <div className="footer__wrap footer__scale-slider">
                                         <div className="footer__scale-slider__inner">
                                             <div className="footer__scale-slider__icon footer__scale-slider__icon--left simple-center">
@@ -103,17 +142,21 @@ export class Footer extends React.Component<FooterProps> {
                                             {Math.round(window.External.preferences.data.gameMusicVolume * 100)}%
                                         </p>
                                     </div>
-                                    {/* Music Toggle */}
+                                    {/* Play/Stop button */}
                                     <div className="footer__wrap">
-                                        <SimpleButton
+                                        <button
+                                            className="simple-button"
+                                            disabled={!hasMusicPath}
+                                            title={hasMusicPath ? (isMusicPlaying ? "Stop music" : "Play music") : "No music available for this game"}
                                             onClick={() => {
-                                                const shouldPlay = !window.External.preferences.data.gameMusicPlay;
-                                                updatePreferencesData({
-                                                    gameMusicPlay: shouldPlay
-                                                });
-                                                window.External.back.send(BackIn.TOGGLE_MUSIC, shouldPlay);
-                                            }}
-                                            value={window.External.preferences.data.gameMusicPlay ? "Stop": "Play"} />
+                                                if (isMusicPlaying) {
+                                                    onStopMusic();
+                                                } else {
+                                                    onPlayMusic();
+                                                }
+                                            }}>
+                                            <FontAwesomeIcon icon={isMusicPlaying ? faStop : faPlay} />
+                                        </button>
                                     </div>
                                 </>
                             )}

@@ -30,8 +30,10 @@ export type IAppPreferencesData = {
     showLogSource: {
         [key: string]: boolean;
     };
-    /** Play game music */
+    /** Autoplay game music when selecting a game */
     gameMusicPlay: boolean;
+    /** Loop game music */
+    gameMusicLoop: boolean;
     /** Game music volume */
     gameMusicVolume: number;
 };

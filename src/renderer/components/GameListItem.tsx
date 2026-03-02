@@ -17,6 +17,8 @@ export type GameListItemProps = ListRowProps & {
     isDragged: boolean;
     /** If game is installed */
     isInstalled: boolean;
+    /** If the game has background music. */
+    hasMusic?: boolean;
 };
 
 export function GameListItem(props: GameListItemProps) {
@@ -31,6 +33,7 @@ export function GameListItem(props: GameListItemProps) {
         isSelected,
         isDragged,
         isInstalled,
+        hasMusic,
         index,
         style,
     } = props;
@@ -69,6 +72,7 @@ export function GameListItem(props: GameListItemProps) {
                         className="game-list-item__field game-list-item__field--title"
                         title={title}
                     >
+                        {hasMusic && <span className="game-list-item__music-note">♪</span>}
                         {title}
                     </div>
                     <div
@@ -98,7 +102,7 @@ export function GameListItem(props: GameListItemProps) {
                 </div>
             </li>
         );
-    }, [style, className, isDraggable, id, tags, title, releaseYear, developer, publisher]);
+    }, [style, className, isDraggable, id, tags, title, releaseYear, developer, publisher, hasMusic]);
 }
 
 export namespace GameListItem {

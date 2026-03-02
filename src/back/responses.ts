@@ -137,25 +137,36 @@ export function registerRequestCallbacks(state: BackState): void {
 
     state.socketServer.register(BackIn.PLAY_AUDIO_FILE, async (event, filePath) => {
         try {
-            if (state.preferences.gameMusicPlay) {
-                console.log(`Playing: ${filePath}`);
-                await state.vlcPlayer?.play(filePath);
-            } else {
-                state.vlcPlayer?.setFile(filePath);
-            }
+            console.log(`Playing: ${filePath}`);
+            await state.vlcPlayer?.play(filePath);
         } catch (err) {
             log("VLC", `${err}`);
             console.log(err);
         }
     });
 
-    state.socketServer.register(BackIn.TOGGLE_MUSIC, async (event, newState) => {
+    state.socketServer.register(BackIn.STOP_MUSIC, async () => {
         try {
-            if (newState) {
-                await state.vlcPlayer?.resume();
-            } else {
-                await state.vlcPlayer?.stop();
-            }
+            await state.vlcPlayer?.stop();
+        } catch (err) {
+            log("VLC", `${err}`);
+            console.log(err);
+        }
+    });
+
+    state.socketServer.register(BackIn.SET_LOOP, async (event, enabled) => {
+        try {
+            state.preferences.gameMusicLoop = enabled;
+            state.vlcPlayer?.setLoop(enabled);
+        } catch (err) {
+            log("VLC", `${err}`);
+            console.log(err);
+        }
+    });
+
+    state.socketServer.register(BackIn.TOGGLE_MUSIC, async () => {
+        try {
+            // No-op: kept to avoid enum churn; frontend no longer calls this
         } catch (err) {
             log("VLC", `${err}`);
             console.log(err);

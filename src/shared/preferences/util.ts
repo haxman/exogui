@@ -53,6 +53,7 @@ export const defaultPreferencesData: Readonly<IAppPreferencesData> =
             // (Add log sources that should be hidden by default here)
         }),
         gameMusicPlay: true,
+        gameMusicLoop: true,
         gameMusicVolume: 0.5,
     });
 
@@ -115,6 +116,7 @@ export function overwritePreferenceData(
     );
     parser.prop("gameMusicVolume", (v) => (source.gameMusicVolume = num(v)), true);
     parser.prop("gameMusicPlay", (v) => (source.gameMusicPlay = !!v), true);
+    parser.prop("gameMusicLoop", (v) => (source.gameMusicLoop = !!v), true);
     // Parse window object
     parseMainWindow(parser.prop("mainWindow"), source.mainWindow);
     parser

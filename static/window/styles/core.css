@@ -78,6 +78,13 @@ body {
   border: 1px solid;
   user-select: none;
 }
+.simple-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.simple-button--active {
+  box-shadow: 0 0 0 2px currentColor;
+}
 /* Simple Selector */
 .simple-selector {
   margin-right: 0.5em;
@@ -1334,6 +1341,13 @@ body {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+/* GameList Item Music Note */
+.game-list-item__music-note {
+  opacity: 0.7;
+  margin-right: 0.3em;
+  font-size: 1.2em;
+  color: var(--layout__game-item-background-selected);
+}
 /* GameList NoGames */
 .game-list__no-games {
   width: 100%;
@@ -1440,6 +1454,17 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+}
+/* GameGrid Item Music Badge */
+.game-grid-item__music-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: calc(0.17px * var(--width));
+  padding: 0.05em 0.1em;
+  opacity: 0.8;
+  pointer-events: none;
+  color: var(--layout__game-item-background-selected);
 }
 /* GameGrid Item Title */
 .game-grid-item__title {

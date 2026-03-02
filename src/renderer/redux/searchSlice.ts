@@ -5,7 +5,7 @@ import {
     parseAdvancedFilter,
     parseUserInput,
 } from "@renderer/util/search";
-import { deepCopy } from "@shared/Util";
+import { deepCopy, fixSlashes } from "@shared/Util";
 import { BackIn } from "@shared/back/types";
 import { getOrderFunction } from "@shared/game/GameFilter";
 import { IGameInfo } from "@shared/game/interfaces";
@@ -41,6 +41,7 @@ export type AdvancedFilter = {
 
 type SearchState = {
     views: Record<string, ResultsView>;
+    isMusicPlaying: boolean;
 };
 
 export type SearchSetTextAction = {
@@ -89,6 +90,7 @@ export type SearchViewAction = {
 
 const initialState: SearchState = {
     views: {},
+    isMusicPlaying: false,
 };
 
 const searchSlice = createSlice({
@@ -174,10 +176,27 @@ const searchSlice = createSlice({
                 view.selectedGame = payload.game
                     ? deepCopy(payload.game)
                     : undefined;
-                if (view.selectedGame?.musicPath) {
-                    window.External.back.send(BackIn.PLAY_AUDIO_FILE, path.join(window.External.config.fullExodosPath, view.selectedGame.musicPath));
+                const musicPath = view.selectedGame?.musicPath;
+                const autoplay = window.External.preferences.data.gameMusicPlay;
+                if (musicPath && autoplay) {
+                    // Play directly without stopping first — VLC keeps its audio pipeline
+                    // alive via add+next, avoiding the audio device reinit stutter
+                    const fullPath = path.join(window.External.config.fullExodosPath, fixSlashes(musicPath));
+                    window.External.back.send(BackIn.PLAY_AUDIO_FILE, fullPath);
+                    state.isMusicPlaying = true;
+                } else {
+                    window.External.back.send(BackIn.STOP_MUSIC);
+                    state.isMusicPlaying = false;
                 }
             }
+        },
+        stopMusic(state: SearchState) {
+            window.External.back.send(BackIn.STOP_MUSIC);
+            state.isMusicPlaying = false;
+        },
+        playMusic(state: SearchState, { payload }: PayloadAction<string>) {
+            window.External.back.send(BackIn.PLAY_AUDIO_FILE, payload);
+            state.isMusicPlaying = true;
         },
         forceSearch(
             state: SearchState,
@@ -265,5 +284,7 @@ export const {
     setOrderBy,
     setOrderReverse,
     setAdvancedFilter,
+    stopMusic,
+    playMusic,
 } = searchSlice.actions;
 export default searchSlice.reducer;

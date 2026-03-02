@@ -17,6 +17,8 @@ export type GameGridItemProps = Partial<GridCellProps> & {
     isDragged: boolean;
     /** If is installed */
     isInstalled: boolean;
+    /** If the game has background music. */
+    hasMusic?: boolean;
 };
 
 /** Displays a single game. Meant to be rendered inside a grid. */
@@ -30,6 +32,7 @@ export function GameGridItem(props: GameGridItemProps) {
         isSelected,
         isDragged,
         isInstalled,
+        hasMusic,
         style,
     } = props;
     // Get the platform icon path
@@ -83,6 +86,9 @@ export function GameGridItem(props: GameGridItemProps) {
                         }`}
                         style={thumbnailStyle}
                     >
+                        {hasMusic && (
+                            <span className="game-grid-item__music-badge">♪</span>
+                        )}
                         <div className="game-grid-item__thumb__icons">
                             {platformIcon ? (
                                 <div
@@ -108,7 +114,7 @@ export function GameGridItem(props: GameGridItemProps) {
                 </div>
             </li>
         );
-    }, [style, className, isDraggable, id, title, platformIcon, thumbnail, isInstalled]);
+    }, [style, className, isDraggable, id, title, platformIcon, thumbnail, isInstalled, hasMusic]);
 }
 
 export namespace GameGridItem {

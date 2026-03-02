@@ -164,6 +164,7 @@ export class GameList extends React.Component<GameListProps> {
                 isSelected={game.id === selectedGame?.id}
                 isDragged={game.id === draggedGameId}
                 isInstalled={game.installed}
+                hasMusic={!!game.musicPath}
             />
         ) : (
             <div key={props.key} style={props.style} />

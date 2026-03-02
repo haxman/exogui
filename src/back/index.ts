@@ -182,7 +182,7 @@ async function initialize(message: any, _: any): Promise<void> {
             case "win32": {
                 state.vlcPlayer = new VlcPlayer(
                     path.join(state.config.exodosPath, "ThirdParty", "VLC", "x64", "vlc.exe"),
-                    [],
+                    ["--no-video"],
                     state.config.vlcPort,
                     state.preferences.gameMusicVolume,
                 );
@@ -191,7 +191,7 @@ async function initialize(message: any, _: any): Promise<void> {
             case "linux": {
                 state.vlcPlayer = new VlcPlayer(
                     "flatpak",
-                    ["run", "com.retro_exo.vlc"],
+                    ["run", "com.retro_exo.vlc", "--no-video"],
                     state.config.vlcPort,
                     state.preferences.gameMusicVolume,
                 );
@@ -200,7 +200,7 @@ async function initialize(message: any, _: any): Promise<void> {
             case "darwin": {
                 state.vlcPlayer = new VlcPlayer(
                     "/Applications/VLC.app/Contents/MacOS/VLC",
-                    [],
+                    ["--no-video"],
                     state.config.vlcPort,
                     state.preferences.gameMusicVolume,
                 );

@@ -41,6 +41,8 @@ export enum BackIn {
     PLAY_AUDIO_FILE,
     TOGGLE_MUSIC,
     SET_VOLUME,
+    STOP_MUSIC,
+    SET_LOOP,
 }
 
 type UnknownCallback = (...args: any[]) => any;
@@ -73,6 +75,8 @@ export type BackInTemplate = SocketTemplate<BackIn, {
     [BackIn.PLAY_AUDIO_FILE]: (filePath: string) => void;
     [BackIn.TOGGLE_MUSIC]: (newState: boolean) => void;
     [BackIn.SET_VOLUME]: (volume: number) => void;
+    [BackIn.STOP_MUSIC]: () => void;
+    [BackIn.SET_LOOP]: (enabled: boolean) => void;
 }>;
 
 export enum BackOut {

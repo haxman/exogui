@@ -2,7 +2,7 @@ import { app, dialog } from "@electron/remote";
 import { BrowsePageLayout } from "@shared/BrowsePageLayout";
 import { setTheme } from "@shared/Theme";
 import { Theme } from "@shared/ThemeFile";
-import { getFileServerURL } from "@shared/Util";
+import { fixSlashes, getFileServerURL } from "@shared/Util";
 import { BackIn, BackInit, BackOut } from "@shared/back/types";
 import { APP_TITLE } from "@shared/constants";
 import { ExodosBackendInfo, GamePlaylist, WindowIPC, UpdaterIPC } from "@shared/interfaces";
@@ -11,6 +11,7 @@ import { memoizeOne } from "@shared/memoize";
 import { updatePreferencesData } from "@shared/preferences/util";
 import { debounce } from "@shared/utils/debounce";
 import { ipcRenderer } from "electron";
+import * as path from "path";
 import * as React from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { Paths } from "./Paths";
@@ -30,6 +31,7 @@ import {
     setPlaylistsLoaded,
     setExecLoaded,
 } from "./redux/loadingSlice";
+import { stopMusic, playMusic } from "./redux/searchSlice";
 import {
     showUpdateAvailable,
     showDownloading,
@@ -60,6 +62,8 @@ const mapDispatch = {
     showDownloaded,
     showError,
     hideDialog,
+    stopMusic,
+    playMusic,
 };
 
 const connector = connect(mapState, mapDispatch);
@@ -457,6 +461,15 @@ class App extends React.Component<AppProps, AppState> {
                                         scaleSliderValue={this.state.gameScale}
                                         onLayoutChange={this.onLayoutSelectorChange}
                                         layout={this.state.gameLayout}
+                                        hasMusicPath={!!view?.selectedGame?.musicPath}
+                                        isMusicPlaying={this.props.searchState.isMusicPlaying}
+                                        onPlayMusic={() => {
+                                            const musicPath = view?.selectedGame?.musicPath;
+                                            if (musicPath) {
+                                                this.props.playMusic(path.join(window.External.config.fullExodosPath, fixSlashes(musicPath)));
+                                            }
+                                        }}
+                                        onStopMusic={() => this.props.stopMusic()}
                                     />
                                 )}
                             </>
