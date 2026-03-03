@@ -389,7 +389,7 @@ function TriStateIconButton({ value, title, icon, onChange }: TriStateIconButton
             title={title}
         >
             <FontAwesomeIcon icon={icon} />
-            <span className="tri-state-icon-button__indicator">
+            <span className={`tri-state-icon-button__indicator${value === true ? " tri-state-icon-button__indicator--check" : value === false ? " tri-state-icon-button__indicator--cross" : ""}`}>
                 {value === true && <FontAwesomeIcon icon={faCheck} />}
                 {value === false && <FontAwesomeIcon icon={faXmark} />}
             </span>

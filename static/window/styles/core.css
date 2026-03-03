@@ -86,20 +86,26 @@ body {
   box-shadow: 0 0 0 2px currentColor;
 }
 .tri-state-icon-button {
-  position: relative;
-  min-width: 2em;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
 }
 .tri-state-icon-button--inactive {
   opacity: 0.4;
 }
 .tri-state-icon-button__indicator {
-  position: absolute;
-  bottom: 1px;
-  right: 2px;
-  font-size: 0.55em;
-  line-height: 1;
-  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+.tri-state-icon-button__indicator--check {
+  color: #4caf50;
+}
+.tri-state-icon-button__indicator--cross {
+  color: #f44336;
 }
 /* Simple Selector */
 .simple-selector {

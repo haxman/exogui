@@ -247,7 +247,7 @@ class BrowsePage extends React.Component<
                             );
                         } else {
                             const height: number = calcScale(
-                                21,
+                                30,
                                 this.props.gameScale
                             );
                             return (
