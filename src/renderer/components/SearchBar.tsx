@@ -497,11 +497,6 @@ function SearchableSelectDropdown(props: SearchableSelectDropdownProps) {
         );
     };
 
-    React.useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, []);
 
     return (
         <div
