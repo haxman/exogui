@@ -85,6 +85,22 @@ body {
 .simple-button--active {
   box-shadow: 0 0 0 2px currentColor;
 }
+.tri-state-icon-button {
+  position: relative;
+  min-width: 2em;
+  text-align: center;
+}
+.tri-state-icon-button--inactive {
+  opacity: 0.4;
+}
+.tri-state-icon-button__indicator {
+  position: absolute;
+  bottom: 1px;
+  right: 2px;
+  font-size: 0.55em;
+  line-height: 1;
+  pointer-events: none;
+}
 /* Simple Selector */
 .simple-selector {
   margin-right: 0.5em;
@@ -2699,7 +2715,11 @@ body {
 
 .search-bar-text-input {
   flex-grow: 1;
-  font-size: medium;
+  font-size: 0.9em;
+}
+
+.search-bar .simple-selector {
+  font-size: 0.9em;
 }
 
 .search-bar-expansion {
