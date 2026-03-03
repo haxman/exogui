@@ -384,7 +384,7 @@ function SearchableSelect(props: SearchableSelectProps) {
     const dropdownRef = React.useRef<HTMLDivElement>(null);
 
     const onToggleExpanded = () => {
-        setExpanded(!expanded);
+        setExpanded(prev => !prev);
     };
 
     // Close dropdown when clicking outside of it

@@ -416,6 +416,10 @@ class BrowsePage extends React.Component<
     }, 500);
 
     onCenterKeyDown = (event: React.KeyboardEvent): void => {
+        const target = event.target as HTMLElement;
+        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+            return;
+        }
         const key: string = event.key.toLowerCase();
         if (!event.ctrlKey && !event.altKey) {
             // (Don't add CTRL or ALT modified key presses)
