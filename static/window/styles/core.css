@@ -2232,7 +2232,48 @@ body {
   line-height: 1.6;
   max-height: 300px;
   overflow-y: auto;
-  white-space: pre-wrap;
+}
+.update-dialog__release-notes-content h1,
+.update-dialog__release-notes-content h2,
+.update-dialog__release-notes-content h3,
+.update-dialog__release-notes-content h4 {
+  margin: 0.8em 0 0.3em;
+  line-height: 1.3;
+}
+.update-dialog__release-notes-content h1 { font-size: 1.3em; }
+.update-dialog__release-notes-content h2 { font-size: 1.15em; }
+.update-dialog__release-notes-content h3 { font-size: 1.05em; }
+.update-dialog__release-notes-content h4 { font-size: 0.95em; }
+.update-dialog__release-notes-content p {
+  margin: 0.4em 0;
+}
+.update-dialog__release-notes-content ul,
+.update-dialog__release-notes-content ol {
+  margin: 0.4em 0;
+  padding-left: 1.5em;
+}
+.update-dialog__release-notes-content li {
+  margin: 0.2em 0;
+}
+.update-dialog__release-notes-content code {
+  font-family: monospace;
+  font-size: 0.88em;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  background-color: var(--layout__secondary-background);
+}
+.update-dialog__release-notes-content pre {
+  font-family: monospace;
+  font-size: 0.85em;
+  padding: 0.6em 0.8em;
+  border-radius: 4px;
+  background-color: var(--layout__secondary-background);
+  overflow-x: auto;
+  white-space: pre;
+}
+.update-dialog__release-notes-content pre code {
+  padding: 0;
+  background: none;
 }
 
 .update-dialog__progress-info {

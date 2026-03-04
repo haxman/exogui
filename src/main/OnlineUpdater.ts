@@ -266,8 +266,8 @@ export class OnlineUpdater {
         }
 
         return releaseNotes
-        .map(note => `Version ${note.version}:\n${note.note || "No description"}`)
-        .join("\n\n");
+        .map(note => `<h4>Version ${note.version}</h4>${note.note || "<p>No description</p>"}`)
+        .join("");
     }
 
     /**
