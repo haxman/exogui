@@ -6,7 +6,7 @@ import {
     UpdateErrorData,
 } from "@shared/back/types";
 
-export type UpdateDialogStatus = "hidden" | "available" | "downloading" | "downloaded" | "error";
+export type UpdateDialogStatus = "hidden" | "checking" | "available" | "downloading" | "downloaded" | "error";
 
 type UpdateDialogState = {
     status: UpdateDialogStatus;
@@ -24,6 +24,13 @@ const updateDialogSlice = createSlice({
     name: "updateDialog",
     initialState,
     reducers: {
+        showChecking(state: UpdateDialogState) {
+            state.status = "checking";
+            state.updateInfo = undefined;
+            state.downloadProgress = undefined;
+            state.downloadedInfo = undefined;
+            state.error = undefined;
+        },
         showUpdateAvailable(
             state: UpdateDialogState,
             { payload }: PayloadAction<UpdateAvailableData>
@@ -70,6 +77,7 @@ const updateDialogSlice = createSlice({
 });
 
 export const {
+    showChecking,
     showUpdateAvailable,
     showDownloading,
     showDownloaded,

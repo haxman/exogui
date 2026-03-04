@@ -497,6 +497,29 @@ body {
   padding: 0.3em 0.7em;
   border: 1px solid rgba(0,0,0,0);
 }
+/* Header Update Indicator */
+.header__update-checking {
+  opacity: 0.6;
+  cursor: default;
+}
+.header__update-spin {
+  animation: header-update-spin 1s linear infinite;
+}
+@keyframes header-update-spin {
+  to { transform: rotate(360deg); }
+}
+.header__update-dot-wrapper {
+  position: relative;
+  cursor: default;
+}
+.header__update-dot {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background-color: #f4a836;
+  vertical-align: middle;
+}
 /* Header Search */
 .header__search__wrap {
   width: 13rem;

@@ -157,6 +157,7 @@ export class OnlineUpdater {
         this._updater.on("checking-for-update", () => {
             console.log("[OnlineUpdater] Checking for updates...");
             this.state.status = "checking";
+            this.mainWindow?.webContents.send(UpdaterIPC.UPDATE_CHECKING);
         });
 
         this._updater.on("update-available", (info: UpdateInfo) => {
@@ -175,6 +176,7 @@ export class OnlineUpdater {
             console.log("[OnlineUpdater] Update not available. Current version is latest.");
             this.state.status = "idle";
             this.state.updateInfo = info;
+            this.mainWindow?.webContents.send(UpdaterIPC.UPDATE_CANCELLED);
 
             if (this.callbacks.onUpdateNotAvailable) {
                 this.callbacks.onUpdateNotAvailable(info);

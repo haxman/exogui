@@ -184,6 +184,8 @@ export enum UpdaterIPC {
     TEST_CANCELLED = "updater:test-cancelled",
     /** Renderer -> Main: Renderer is ready to receive update notifications */
     RENDERER_READY = "updater:renderer-ready",
+    /** Main -> Renderer: Update check is in progress */
+    UPDATE_CHECKING = "updater:checking",
 }
 
 /** IPC channels used to relay game manager events from  */
